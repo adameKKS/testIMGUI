@@ -167,13 +167,12 @@
     <ClCompile Include="..\..\backends\imgui_impl_dx12.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="contest.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\misc\debuggers\imgui.natstepfilter" />
     <None Include="..\README.txt" />
-    <None Include="contest.inl" />
+    <None Include="fx.inl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\..\misc\debuggers\imgui.natvis" />

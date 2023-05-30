@@ -22,9 +22,6 @@
 #include <dxgidebug.h>
 #pragma comment(lib, "dxguid.lib")
 #endif
-/////////////////////////////////////CIPA/////////////////////////////////////////////
-
-/////////////////////////////////////CIPA/////////////////////////////////////////////
 
 
 struct FrameContext
@@ -193,7 +190,8 @@ int main(int, char**)
         //}
 
         // Rendering
-
+        //myApp::FxTestBed();
+        myApp::RenderUI();
         ImGui::Render();
 
         FrameContext* frameCtx = WaitForNextFrameResources();

@@ -52,14 +52,13 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="contest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.txt" />
     <None Include="..\..\misc\debuggers\imgui.natstepfilter">
       <Filter>imgui</Filter>
     </None>
-    <None Include="contest.inl" />
+    <None Include="fx.inl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\..\misc\debuggers\imgui.natvis">

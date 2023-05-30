@@ -39,7 +39,7 @@
 
 // Insert your code in fx.inl
 // This is the file which size we are measuring, and should be kept <1024 bytes
-#include "contest.inl" // <--- your effect
+//#include "fx.inl" // <--- your effect
 
 // Shared testbed
 void FxTestBed()

@@ -2,4 +2,6 @@
 
 namespace myApp {
     void RenderUI();
+    void FxTestBed();
 }
+
