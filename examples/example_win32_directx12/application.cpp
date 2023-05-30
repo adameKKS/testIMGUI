@@ -13,8 +13,14 @@ namespace myApp {
     {
         ImVec2 size(320.f, 180.f);
         ImGui::SetNextWindowSize(size);
+        ImVec2 p0 = ImGui::GetItemRectMin();
+        ImVec2 p1 = ImGui::GetItemRectMax();
         ImGui::Begin("buziaczki adamek");
         ImGui::Text("size variable: %f, %f",size.x,size.y);
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        draw_list->PushClipRect(p0, p1);
+        draw_list->AddRectFilled(ImVec2(((p0.x + p1.x)/2)-5,((p0.y + p1.y) / 2)-5), ImVec2(((p0.x + p1.x) / 2) + 5, ((p0.y + p1.y) / 2) + 5), IM_COL32(128, 128, 0, 255));
+        draw_list->PopClipRect();
         ImGui::End();
     }
 
