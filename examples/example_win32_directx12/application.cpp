@@ -8,18 +8,39 @@
 
 #include "fx.inl"
 
+
 namespace myApp {
-    void RenderUI()
+     void RenderUI()
     {
-        ImVec2 size(320.f, 180.f);
-        ImGui::SetNextWindowSize(size);
-        ImVec2 p0 = ImGui::GetItemRectMin();
-        ImVec2 p1 = ImGui::GetItemRectMax();
+        counter++;
+        const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y),ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
         ImGui::Begin("buziaczki adamek");
-        ImGui::Text("size variable: %f, %f",size.x,size.y);
+       
+        ImVec2 WinSize = ImGui::GetWindowSize();
+        ImVec2 WinPos = ImGui::GetWindowPos();
+
+        ImGui::Text("WinSize: %f, %f", WinSize.x, WinSize.y);
+        ImGui::Text("WinPos: %f, %f", WinPos.x, WinPos.y);
+
+        ImVec2 center(WinPos.x + WinSize.x/2, WinPos.y + WinSize.y /2) ;
+        ImGui::Text("center: %f, %f", center.x, center.y);
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        draw_list->PushClipRect(p0, p1);
-        draw_list->AddRectFilled(ImVec2(((p0.x + p1.x)/2)-5,((p0.y + p1.y) / 2)-5), ImVec2(((p0.x + p1.x) / 2) + 5, ((p0.y + p1.y) / 2) + 5), IM_COL32(128, 128, 0, 255));
+        draw_list->PushClipRect(WinPos, WinSize);
+        /*draw_list->AddRectFilled(
+            ImVec2(center.x-50.f,center.y-50.f),
+            ImVec2(center.x+50.f,center.y+50.f),
+            IM_COL32(255, 128, 0, 255));*/
+       
+
+        ImVec2 jula(center.x, center.y);
+
+        rect prostokont(jula, 100.f, 60.f);
+        prostokont.GetCenter();
+        
+        prostokont.DrawRect(draw_list, WinPos, WinSize, ImVec2(counter, 0));
+        
         draw_list->PopClipRect();
         ImGui::End();
     }
@@ -45,5 +66,26 @@ namespace myApp {
         FX(draw_list, p0, p1, size, mouse_data, (float)ImGui::GetTime());
         draw_list->PopClipRect();
         ImGui::End();
+    }
+
+
+
+
+
+
+
+    rect::rect(ImVec2& center, float Horizontal, float Vertical)
+        :center(center)
+    {
+        this->Horizontal = Horizontal;
+        this->Vertical = Vertical;
+    };
+    void rect::GetCenter()
+    {
+        ImGui::Text("TopLeft: %f, %f", center.x, center.y);
+    }
+    void rect::DrawRect(ImDrawList* draw_list, ImVec2 WinPos, ImVec2 WinSize, ImVec2 CenterPos)
+    {
+        draw_list->AddRectFilled(ImVec2(center.x-Horizontal+CenterPos.x,center.y-Vertical+CenterPos.y), ImVec2(center.x + Horizontal + CenterPos.x, center.y + Vertical + CenterPos.y), IM_COL32(255, 128, 0, 255));
     }
 }
