@@ -5,6 +5,7 @@
 #include <math.h>
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <iostream>
 
 #include "fx.inl"
 
@@ -23,9 +24,8 @@ namespace myApp {
 
         ImGui::Text("WinSize: %f, %f", WinSize.x, WinSize.y);
         ImGui::Text("WinPos: %f, %f", WinPos.x, WinPos.y);
-
+        ImGui::Text("Velocity: %f", velocity);
         ImVec2 center(WinPos.x + WinSize.x/2, WinPos.y + WinSize.y /2) ;
-        ImGui::Text("center: %f, %f", center.x, center.y);
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
         draw_list->PushClipRect(WinPos, WinSize);
         /*draw_list->AddRectFilled(
@@ -36,10 +36,13 @@ namespace myApp {
 
         ImVec2 jula(center.x, center.y);
 
-        rect prostokont(jula, 100.f, 60.f);
+        static myApp::rect prostokont(jula, 50.f, 70.f);
         prostokont.GetCenter();
-        
-        prostokont.DrawRect(draw_list, WinPos, WinSize, ImVec2(counter, 0));
+
+        if (ImGui::IsKeyDown(ImGuiKey_UpArrow)) velocity = prostokont.Jump();
+        if (!ImGui::IsKeyDown(ImGuiKey_UpArrow)) velocity = prostokont.EndJump();
+        prostokont.Update(velocity, gravity);
+        prostokont.DrawRect(draw_list, WinPos, WinSize);
         
         draw_list->PopClipRect();
         ImGui::End();
@@ -79,13 +82,27 @@ namespace myApp {
     {
         this->Horizontal = Horizontal;
         this->Vertical = Vertical;
+        std::cout << "Tworze obiekta" << std::endl;
     };
     void rect::GetCenter()
     {
         ImGui::Text("TopLeft: %f, %f", center.x, center.y);
     }
-    void rect::DrawRect(ImDrawList* draw_list, ImVec2 WinPos, ImVec2 WinSize, ImVec2 CenterPos)
+    void rect::DrawRect(ImDrawList* draw_list, ImVec2 WinPos, ImVec2 WinSize)
     {
-        draw_list->AddRectFilled(ImVec2(center.x-Horizontal+CenterPos.x,center.y-Vertical+CenterPos.y), ImVec2(center.x + Horizontal + CenterPos.x, center.y + Vertical + CenterPos.y), IM_COL32(255, 128, 0, 255));
+        draw_list->AddRectFilled(ImVec2(center.x-Horizontal,center.y-Vertical), ImVec2(center.x + Horizontal, center.y + Vertical), IM_COL32(255, 128, 0, 255));
+    }
+    float rect::Jump()
+    {
+        return velocity = -12.f;
+    }
+    float rect::EndJump()
+    {
+        return (velocity < -6.f) ? velocity = 6.f : velocity;
+    }
+    void rect::Update(float velocity, float gravity)
+    {
+        velocity += gravity;
+        this->center.y += velocity;
     }
 }
