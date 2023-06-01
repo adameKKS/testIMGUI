@@ -59,8 +59,6 @@ FrameContext* WaitForNextFrameResources();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int counter = 0;
-float velocity = 0;
-float gravity = .001f;
 
 // Main code
 int main(int, char**)

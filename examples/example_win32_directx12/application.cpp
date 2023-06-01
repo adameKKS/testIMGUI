@@ -24,27 +24,32 @@ namespace myApp {
 
         ImGui::Text("WinSize: %f, %f", WinSize.x, WinSize.y);
         ImGui::Text("WinPos: %f, %f", WinPos.x, WinPos.y);
-        ImGui::Text("Velocity: %f", velocity);
         ImVec2 center(WinPos.x + WinSize.x/2, WinPos.y + WinSize.y /2) ;
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        draw_list->PushClipRect(WinPos, WinSize);
+        draw_list->PushClipRect(WinPos, ImVec2(WinSize.x+WinPos.x,WinSize.y+WinPos.y));
         /*draw_list->AddRectFilled(
             ImVec2(center.x-50.f,center.y-50.f),
             ImVec2(center.x+50.f,center.y+50.f),
             IM_COL32(255, 128, 0, 255));*/
-       
+        ImVec2 ground(WinPos.x+WinSize.x,WinPos.y + WinSize.y);
 
         ImVec2 jula(center.x, center.y);
 
-        static myApp::rect prostokont(jula, 50.f, 70.f);
-        prostokont.GetCenter();
+        static myApp::rect prostokont(jula, 50.f, 40.f);
+        
+        //mechanics
+        prostokont.Update(ground);
+        
+        
+        prostokont.DrawRect(draw_list);
 
-        if (ImGui::IsKeyDown(ImGuiKey_UpArrow)) velocity = prostokont.Jump();
-        if (!ImGui::IsKeyDown(ImGuiKey_UpArrow)) velocity = prostokont.EndJump();
-        prostokont.Update(velocity, gravity);
-        prostokont.DrawRect(draw_list, WinPos, WinSize);
+        ///visu
+        prostokont.GetVel();
+        prostokont.GetAcc();
+        prostokont.GetCenter();
         
         draw_list->PopClipRect();
+
         ImGui::End();
     }
 
@@ -82,27 +87,85 @@ namespace myApp {
     {
         this->Horizontal = Horizontal;
         this->Vertical = Vertical;
+        acc = 0;
         std::cout << "Tworze obiekta" << std::endl;
     };
     void rect::GetCenter()
     {
-        ImGui::Text("TopLeft: %f, %f", center.x, center.y);
+        ImGui::Text("center.x: %f, center.y: %f", center.x, center.y);
     }
-    void rect::DrawRect(ImDrawList* draw_list, ImVec2 WinPos, ImVec2 WinSize)
+    void rect::GetVel()
+    {
+        ImGui::Text("velY: %f", velY);
+    }
+    void rect::GetAcc()
+    {
+        ImGui::Text("acc: %f", acc);
+    }
+    void rect::DrawRect(ImDrawList* draw_list)
     {
         draw_list->AddRectFilled(ImVec2(center.x-Horizontal,center.y-Vertical), ImVec2(center.x + Horizontal, center.y + Vertical), IM_COL32(255, 128, 0, 255));
     }
-    float rect::Jump()
+    void rect::Jump()
     {
-        return velocity = -12.f;
+        //if (onGround)
+        //{
+        //    ImGui::Text("ONGROUND WARNING!");
+        //    velY = -2.f; //chujowe
+        //    acc -= .3f;
+        //    onGround = false;
+        //}
+        if (height)
+        {
+            ImGui::Text("HEIGHT WARNING!");
+            acc = 0; //zastanowic sie czy tu nie warto dac += -.1 czy inna wartosc
+            //velY = 0;
+        }
+        else if(!height && onGround) // nie wiem czy to ma sens ale przez to dzia³a lepiej
+        {
+            ImGui::Text("ONGROUND WARNING!");
+            velY = -2.f; //chujowe chociaz????
+            acc -= .1f;
+            onGround = false;
+        }
     }
-    float rect::EndJump()
+    void rect::EndJump()
     {
-        return (velocity < -6.f) ? velocity = 6.f : velocity;
+        ImGui::Text("BUTTON RELEASED!!!!!!");
+        if (!onGround)acc += .03f;
+        else
+        {
+            velY = 0;
+            acc = 0;
+        }
     }
-    void rect::Update(float velocity, float gravity)
+    void rect::Update(ImVec2 ground)
     {
-        velocity += gravity;
-        this->center.y += velocity;
+        velY += gravity + acc;
+        this->center.y += velY;
+        float newCenter = center.y + velY;
+        
+        if (newCenter + Vertical >= ground.y)
+        {
+            acc = velY = 0;
+            newCenter = ground.y - Vertical;
+            onGround = true;                    
+        }
+        if (newCenter + Vertical <= ground.y / 1.3)
+        {
+            height = true;
+        }
+        else
+        {
+            height = false;
+        }
+        ImGui::Text("newCenter: %f", newCenter);
+        this->center.y = newCenter;
+        ImGui::Text("center.y + Vertical: %f, winpos.y + winsize.y: %f", center.y + Vertical, ground.y);
+        ImGui::Text("ground.y: %f", ground.y);
+
+        ImGui::Text("ground.y / 0.9: %f", (ground.y / 1.3));
+        if (ImGui::IsKeyDown(ImGuiKey_UpArrow)) this->Jump();
+        if (!ImGui::IsKeyDown(ImGuiKey_UpArrow)) this->EndJump();
     }
 }

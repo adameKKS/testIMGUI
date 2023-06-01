@@ -1,7 +1,6 @@
 #pragma once
 #include <imgui.h>
 extern int counter;
-extern float velocity;
 extern float gravity;
 
 namespace myApp {
@@ -12,15 +11,23 @@ namespace myApp {
     public:
         rect(ImVec2& center, float Horizontal, float Vertical);
         void GetCenter();
-        void DrawRect(ImDrawList* draw_list, ImVec2 WinPos, ImVec2 WinSize); // cemterPos allows us to modify the position of the rect- centerpos.x and centerpos.y are added to the draw func so every time the function is executed the updated position is rendered.
-        float rect::Jump();
-        float rect::EndJump();
-        void rect::Update(float velocity, float gravity);
+        void GetVel();
+        void rect::GetAcc();
+
+        void DrawRect(ImDrawList* draw_list); // cemterPos allows us to modify the position of the rect- centerpos.x and centerpos.y are added to the draw func so every time the function is executed the updated position is rendered.
+        void rect::Jump();
+        void rect::EndJump();
+        void rect::Update(ImVec2 ground);
         
     private:
         ImVec2 center;
         float Horizontal;
         float Vertical;
+        float velY;
+        float acc;
+        float gravity = .09f;
+        bool onGround;
+        bool height= false;
     };
 }
 
