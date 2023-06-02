@@ -1,4 +1,3 @@
-
 #define IMGUI_DEFINE_MATH_OPERATORS // Access to math operators
 
 #include "application.h"
@@ -27,21 +26,18 @@ namespace myApp {
         ImVec2 center(WinPos.x + WinSize.x/2, WinPos.y + WinSize.y /2) ;
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
         draw_list->PushClipRect(WinPos, ImVec2(WinSize.x+WinPos.x,WinSize.y+WinPos.y));
-        /*draw_list->AddRectFilled(
-            ImVec2(center.x-50.f,center.y-50.f),
-            ImVec2(center.x+50.f,center.y+50.f),
-            IM_COL32(255, 128, 0, 255));*/
+
         ImVec2 ground(WinPos.x+WinSize.x,WinPos.y + WinSize.y);
 
         ImVec2 jula(center.x, center.y);
 
         static myApp::rect prostokont(jula, 50.f, 40.f);
-        
+        static myApp::rect kwadrat(ImVec2(jula.x + 50.f, jula.y + 50.f), 30.f, 30.f);
         //mechanics
-        prostokont.Update(ground);
-        
-        
+        prostokont.Update(ground,WinPos);       
+        kwadrat.Update(ground, WinPos);
         prostokont.DrawRect(draw_list);
+        kwadrat.DrawRect(draw_list);
 
         ///visu
         prostokont.GetVel();
@@ -108,26 +104,22 @@ namespace myApp {
     }
     void rect::Jump()
     {
-        //if (onGround)
-        //{
-        //    ImGui::Text("ONGROUND WARNING!");
-        //    velY = -2.f; //chujowe
-        //    acc -= .3f;
-        //    onGround = false;
-        //}
-        if (height)
+
+        if (height)return; // so EndJumps activates when there is "height" limit achieved
+        if(onGround) // nie wiem czy to ma sens ale przez to dzia³a lepiej
         {
-            ImGui::Text("HEIGHT WARNING!");
-            acc = 0; //zastanowic sie czy tu nie warto dac += -.1 czy inna wartosc
-            //velY = 0;
-        }
-        else if(!height && onGround) // nie wiem czy to ma sens ale przez to dzia³a lepiej
-        {
+            std::cout << "jestem tu" << std::endl;
             ImGui::Text("ONGROUND WARNING!");
-            velY = -2.f; //chujowe chociaz????
-            acc -= .1f;
+            velY = -4.f; //chujowe chociaz????
+            acc -= .3f;
             onGround = false;
         }
+        else
+        {
+            acc = 0; //zastanowic sie czy tu nie warto dac += -.1 czy inna wartosc
+        }
+        
+
     }
     void rect::EndJump()
     {
@@ -139,33 +131,40 @@ namespace myApp {
             acc = 0;
         }
     }
-    void rect::Update(ImVec2 ground)
+    void rect::Update(ImVec2& ground, ImVec2& winpos)
     {
         velY += gravity + acc;
         this->center.y += velY;
-        float newCenter = center.y + velY;
+        //float newCenter = center.y + velY;
+        ImVec2 newCenter(center.x + velX,center.y + velY);
+
         
-        if (newCenter + Vertical >= ground.y)
+        if (newCenter.y + Vertical >= ground.y)
         {
             acc = velY = 0;
-            newCenter = ground.y - Vertical;
-            onGround = true;                    
-        }
-        if (newCenter + Vertical <= ground.y / 1.3)
-        {
-            height = true;
-        }
-        else
-        {
+            newCenter.y = ground.y - Vertical;
+            onGround = true;
             height = false;
         }
-        ImGui::Text("newCenter: %f", newCenter);
-        this->center.y = newCenter;
-        ImGui::Text("center.y + Vertical: %f, winpos.y + winsize.y: %f", center.y + Vertical, ground.y);
-        ImGui::Text("ground.y: %f", ground.y);
+        if (newCenter.y + Vertical <= ground.y / 1.1) //parameter to tweak->height border
+        {
+            height = true;
+            if (height)std::cout << "HEIGHT!!!!!" << std::endl;
+        }
 
-        ImGui::Text("ground.y / 0.9: %f", (ground.y / 1.3));
+        if (newCenter.x + Horizontal >= ground.x || newCenter.x - Horizontal<=winpos.x)
+        {
+            velX *= -1;
+        }
+
+
+        this->center.y = newCenter.y;
+        this->center.x = newCenter.x;
+
         if (ImGui::IsKeyDown(ImGuiKey_UpArrow)) this->Jump();
-        if (!ImGui::IsKeyDown(ImGuiKey_UpArrow)) this->EndJump();
+        if (!ImGui::IsKeyDown(ImGuiKey_UpArrow) || height) this->EndJump();
+
+        ImGui::Text("newCenter: %f", newCenter.y);
+        ImGui::Text("center.y + Vertical: %f, winpos.y + winsize.y: %f", center.y + Vertical, ground.y);
     }
 }
