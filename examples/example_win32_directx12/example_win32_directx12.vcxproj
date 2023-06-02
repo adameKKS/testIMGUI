@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\misc\debuggers\imgui.natstepfilter" />

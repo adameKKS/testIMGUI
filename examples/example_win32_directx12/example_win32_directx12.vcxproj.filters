@@ -52,6 +52,7 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="rect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.txt" />

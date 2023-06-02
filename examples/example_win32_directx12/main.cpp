@@ -194,7 +194,7 @@ int main(int, char**)
         //}
 
         // Rendering
-        //myApp::FxTestBed();
+        
         myApp::RenderUI();
         ImGui::Render();
 

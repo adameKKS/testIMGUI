@@ -5,19 +5,22 @@ extern float gravity;
 
 namespace myApp {
     void RenderUI();
-    void FxTestBed();
+
     class rect
     {
     public:
         rect(ImVec2& center, float Horizontal, float Vertical);
         void GetCenter();
         void GetVel();
-        void rect::GetAcc();
+        void GetAcc();
 
+        void SetVelX(float velX);
+        void SetVelY(float velY);
+        
         void DrawRect(ImDrawList* draw_list); // cemterPos allows us to modify the position of the rect- centerpos.x and centerpos.y are added to the draw func so every time the function is executed the updated position is rendered.
-        void rect::Jump();
-        void rect::EndJump();
-        void rect::Update(ImVec2& ground, ImVec2& winpos);
+        void Jump();
+        void EndJump();
+        void Update(ImVec2& ground, ImVec2& winpos);
         
     private:
         ImVec2 center;
