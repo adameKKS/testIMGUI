@@ -17,7 +17,7 @@ namespace myApp {
         void SetVelX(float velX);
         void SetVelY(float velY);
         
-        void DrawRect(ImDrawList* draw_list); // cemterPos allows us to modify the position of the rect- centerpos.x and centerpos.y are added to the draw func so every time the function is executed the updated position is rendered.
+        void DrawRect(ImDrawList* draw_list);
         void Jump();
         void EndJump();
         void Update(ImVec2& ground, ImVec2& winpos);

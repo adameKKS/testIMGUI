@@ -92,8 +92,8 @@ namespace myApp
             velX *= -1;
         }
 
-        if (ImGui::IsKeyDown(ImGuiKey_F1))SetVelX(--velX);
-        if (ImGui::IsKeyDown(ImGuiKey_F2))SetVelX(++velX);
+        if (ImGui::IsKeyDown(ImGuiKey_F1))SetVelX((velX >= 0) ? --velX:++velX);
+        if (ImGui::IsKeyDown(ImGuiKey_F2))SetVelX((velX > 0) ? ++velX : --velX);
 
 
         this->center.y = newCenter.y;
