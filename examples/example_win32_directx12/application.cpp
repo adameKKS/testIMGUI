@@ -50,4 +50,7 @@ namespace myApp {
         ImGui::End();
     }
 }
-
+/*
+NOTES:
+-when vel=0.5 and f1 is clicked to stop the block entirely, the sign at the velocty changes since f1 click= --velX. To be updated: f1 press should stop the block entirely without moving in any direction and if we want the movement to be renewed, the previous direction should be preserved.
+*/

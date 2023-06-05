@@ -18,6 +18,8 @@ namespace myApp
     void rect::GetVel()
     {
         ImGui::Text("velY: %f", velY);
+        ImGui::Text("velX: %f", velX);
+
     }
     void rect::GetAcc()
     {
@@ -70,7 +72,6 @@ namespace myApp
     {
         velY += gravity + acc;
         this->center.y += velY;
-        //float newCenter = center.y + velY;
         ImVec2 newCenter(center.x + velX, center.y + velY);
 
 
